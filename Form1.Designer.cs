@@ -35,8 +35,6 @@ namespace PartType_OEM
             this.partdataDataSet = new PartType_OEM.partdataDataSet();
             this.partsTableAdapter = new PartType_OEM.partdataDataSetTableAdapters.partsTableAdapter();
             this.PT_select = new System.Windows.Forms.Button();
-            this.partnumberDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.partnameDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.gui_parts_table)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.partsBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.partdataDataSet)).BeginInit();
@@ -46,12 +44,7 @@ namespace PartType_OEM
             // 
             this.gui_parts_table.AllowUserToAddRows = false;
             this.gui_parts_table.AllowUserToDeleteRows = false;
-            this.gui_parts_table.AutoGenerateColumns = false;
             this.gui_parts_table.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.gui_parts_table.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.partnumberDataGridViewTextBoxColumn,
-            this.partnameDataGridViewTextBoxColumn});
-            this.gui_parts_table.DataSource = this.partsBindingSource;
             this.gui_parts_table.Location = new System.Drawing.Point(12, 12);
             this.gui_parts_table.Name = "gui_parts_table";
             this.gui_parts_table.ReadOnly = true;
@@ -83,22 +76,6 @@ namespace PartType_OEM
             this.PT_select.UseVisualStyleBackColor = true;
             this.PT_select.Click += new System.EventHandler(this.button1_Click);
             // 
-            // partnumberDataGridViewTextBoxColumn
-            // 
-            this.partnumberDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.partnumberDataGridViewTextBoxColumn.DataPropertyName = "partnumber";
-            this.partnumberDataGridViewTextBoxColumn.HeaderText = "partnumber";
-            this.partnumberDataGridViewTextBoxColumn.Name = "partnumberDataGridViewTextBoxColumn";
-            this.partnumberDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
-            // partnameDataGridViewTextBoxColumn
-            // 
-            this.partnameDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            this.partnameDataGridViewTextBoxColumn.DataPropertyName = "partname";
-            this.partnameDataGridViewTextBoxColumn.HeaderText = "partname";
-            this.partnameDataGridViewTextBoxColumn.Name = "partnameDataGridViewTextBoxColumn";
-            this.partnameDataGridViewTextBoxColumn.ReadOnly = true;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -123,8 +100,6 @@ namespace PartType_OEM
         private System.Windows.Forms.BindingSource partsBindingSource;
         private partdataDataSetTableAdapters.partsTableAdapter partsTableAdapter;
         private System.Windows.Forms.Button PT_select;
-        private System.Windows.Forms.DataGridViewTextBoxColumn partnumberDataGridViewTextBoxColumn;
-        private System.Windows.Forms.DataGridViewTextBoxColumn partnameDataGridViewTextBoxColumn;
     }
 }
 

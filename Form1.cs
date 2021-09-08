@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using MySql.Data.MySqlClient;
 using System.Threading;
 using Sharp7;
+using System.Text.Json;
 
 
 
@@ -52,32 +53,66 @@ namespace PartType_OEM
                    (value & 0x00FF000000000000UL) >> 40 | (value & 0xFF00000000000000UL) >> 56;
         }
 
+        public void gridview_binding()
+        {
+            var con = new MySql.Data.MySqlClient.MySqlConnection();
+            con.ConnectionString = Properties.Settings.Default.partdataConnectionString;
+
+            if (con != null && con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+
+            MySqlCommand cmd = new MySqlCommand("SELECT wptype,description,typeclass FROM partdata.parts;", con);
+            DataTable db_view = new DataTable();
+            MySqlDataAdapter da = new MySqlDataAdapter(cmd);
+            da.Fill(db_view);
+          
+            var bindingSource = new BindingSource();
+            bindingSource.DataSource = db_view;
+            gui_parts_table.Invoke(new Action(() => gui_parts_table.DataSource = bindingSource));
+            con.Close();
+            
+
+
+        }
+
+
         private void Form1_Load(object sender, EventArgs e)
         {
             //Launch second Thread
             Thread plcconnection = new Thread(new ThreadStart(PlcConnector));
-            plcconnection.Start();
+            plcconnection.Start ();
 
-            // TODO: Diese Codezeile lädt Daten in die Tabelle "partdataDataSet.parts". Sie können sie bei Bedarf verschieben oder entfernen.
-            this.partsTableAdapter.Fill(this.partdataDataSet.parts);
+            //Initialize Table
+            gridview_binding();
+
+            //Create new Sql Connector instead of reusing Table Connector
+            var con = new MySql.Data.MySqlClient.MySqlConnection();
+            con.ConnectionString = Properties.Settings.Default.partdataConnectionString;
+            
+
+            if (con != null && con.State == ConnectionState.Closed)
+            {
+                con.Open();
+            }
+            
             this.gui_parts_table.RowHeadersVisible = false;
             this.gui_parts_table.AllowUserToResizeRows = false;
             this.gui_parts_table.AllowUserToResizeColumns = false;
             this.gui_parts_table.MultiSelect = false;
             this.gui_parts_table.BackgroundColor = Color.White;
-            var con = this.partsTableAdapter.Connection;
-            if (con != null && con.State == ConnectionState.Closed)
-            {
-                con.Open();
-            }
-            var active_type = "SELECT partnumber from parts WHERE activated = 1;";
+            var active_type = "SELECT wptype from parts WHERE activated = 1;";
             var cmd_act = new MySqlCommand(active_type, con);
             var num = cmd_act.ExecuteScalar();
-            foreach (DataGridViewRow row in this.gui_parts_table.Rows)
+            if (num != null)
             {
-                if (Convert.ToInt32(row.Cells[0].Value.ToString()) == Convert.ToInt32(num))
+                foreach (DataGridViewRow row in this.gui_parts_table.Rows)
                 {
-                    row.DefaultCellStyle.BackColor = Color.Yellow;
+                    if (Convert.ToInt32(row.Cells[0].Value) == Convert.ToInt32(num))
+                    {
+                        row.DefaultCellStyle.BackColor = Color.Yellow;
+                    }
                 }
             }
         }
@@ -88,7 +123,6 @@ namespace PartType_OEM
             int Rack = 0;
             int Slot = 2;
             string Address = "192.168.214.1";
-
 
             if (connected)
             {
@@ -113,8 +147,41 @@ namespace PartType_OEM
                     Console.WriteLine("Failed on Connection Establishment");
                 }
             }
+        }
 
 
+        private static void write_struct(S7Client client, int wptype, int typeclass, string description, ref bool error)
+        {
+            //Create Config Write
+            int area = (int)S7Area.DB;
+            int bytelen = (int)S7WordLength.Byte;
+
+            //Init Write buffer
+            byte[] write_buffer = new byte[20];
+            int bytes_written = 0;
+
+            //Prepare Data
+            byte[] wptype_write = BitConverter.GetBytes(Convert.ToInt16(wptype));
+            Array.Reverse(wptype_write);
+            Array.Copy(wptype_write, 0, write_buffer, 0, 2);
+            byte[] typeclass_write = BitConverter.GetBytes(Convert.ToInt16(typeclass));
+            Array.Reverse(typeclass_write);
+            Array.Copy(typeclass_write, 0, write_buffer, 2, 2);
+            byte[] descr_write = Encoding.ASCII.GetBytes(description);
+            Array.Copy(descr_write, 0, write_buffer, 4,descr_write.Length);
+
+
+            //Perform Write
+            int result = client.WriteArea(area,1510,62,20,bytelen,write_buffer,ref bytes_written);
+        
+            if (bytes_written == write_buffer.Length)
+            {
+                error = error | false;
+            }
+            else
+            {
+                error = error | true;
+            }
         }
 
         private static void readNames(S7Client client, ref List<string> names, ref bool error)
@@ -141,12 +208,7 @@ namespace PartType_OEM
                 utf8string = utf8string.Trim('\0');
                 utf8string = utf8string.Trim();
                 names.Add(utf8string);
-
             }
-
-
-
-
         }
 
 
@@ -189,37 +251,57 @@ namespace PartType_OEM
             aTimer.Elapsed += new System.Timers.ElapsedEventHandler(onTimedEvent);
             aTimer.Interval = 5000;
             aTimer.Enabled = true;
+            var con = new MySql.Data.MySqlClient.MySqlConnection();
+            con.ConnectionString = Properties.Settings.Default.partdataConnectionString;
 
-
-
-
-            while (true)
+            if (con != null && con.State == ConnectionState.Closed)
             {
-                if (connected)
-                {
-                    //Read PDU Size (240-960Byte)
-                    client.GetCpInfo(ref info);
-                    Console.WriteLine($"Max PDU Length: {info.MaxPduLength}");
+                con.Open();
+            }
 
-                    List<int> types = new List<int>();
-                    List<string> names = new List<string>();
-                    bool error = false;
-                    readTypes(client, ref types, ref error);
-                    readNames(client, ref names, ref error);
-                    Console.WriteLine(error);
-                    
-                    break;
+            /*
+            * MAIN LOOP
+            */
 
-                }
-                else
-                {
-                    Console.WriteLine("Waiting for Connection Establishment");
-                }
-
+            while (connected != true)
+            {
+                Console.WriteLine("Waiting for Connection Establishment");
                 Thread.Sleep(1000);
             }
 
 
+            if (connected)
+            {
+                //Read PDU Size (240-960Byte)
+                client.GetCpInfo(ref info);
+                Console.WriteLine($"Max PDU Length: {info.MaxPduLength}");
+
+                List<int> types = new List<int>();
+                List<string> names = new List<string>();
+                bool error = false;
+                readTypes(client, ref types, ref error);
+                readNames(client, ref names, ref error);
+                if (error != true)
+                {
+                    var json_types = JsonSerializer.Serialize(types);
+                    var json_names = JsonSerializer.Serialize(names);
+                    var func_ret = new MySqlParameter("func_ret", SqlDbType.Bit);
+                    func_ret.Direction = ParameterDirection.ReturnValue;
+                    var upd_desc = new MySqlCommand("update_description", con);
+                    upd_desc.CommandType = CommandType.StoredProcedure;
+                    upd_desc.Parameters.Add(new MySqlParameter("wptype", json_types));
+                    upd_desc.Parameters.Add(new MySqlParameter("wpname", json_names));
+                    upd_desc.Parameters.Add(func_ret);
+                    upd_desc.ExecuteNonQuery();
+                    Console.WriteLine($"Return value of function call was {func_ret.Value}");
+                    if (error != true)
+                    {
+                        gridview_binding();
+                    }
+                }
+                con.Close();              
+            }
+            
         }
 
 
@@ -236,7 +318,7 @@ namespace PartType_OEM
             
             
             //Reset Value in DB
-            var stm = "UPDATE parts SET activated = 0 WHERE activated = 1;";
+            var stm = "UPDATE workpieces SET activated = 0 WHERE activated = 1;";
             var cmd = new MySqlCommand(stm, con);
             cmd.ExecuteScalar();
 
@@ -246,8 +328,30 @@ namespace PartType_OEM
                 row.DefaultCellStyle.BackColor = Color.White;
             }
 
+            //Get Data for PLC TypeSelect
+            int wptype = 0;
+            int typeclass = 0;
+            string description = "";
+            var query_typeselect = $"SELECT wptype,typeclass,description FROM parts WHERE wptype = {selected_num};";
+            var cmd_typeselect = new MySqlCommand(query_typeselect, con);
+            using (MySqlDataReader struct_data = cmd_typeselect.ExecuteReader())
+            {
+                while (struct_data.Read())
+                {
+                    wptype = struct_data.GetInt32("wptype");
+                    typeclass = struct_data.GetInt32("typeclass");
+                    description = struct_data.GetString("description");
+                }
+            }
+            //Write To DB
+            if (connected)
+            {
+                bool success = new bool();
+                write_struct(client, wptype,typeclass,description, ref success);
+            }
 
-            var query_num = $"UPDATE parts SET activated = 1 WHERE partnumber = {selected_num};";
+
+            var query_num = $"UPDATE workpieces SET activated = 1 WHERE wptype = {selected_num};";
             var command_num = new MySqlCommand(query_num, con);
             var retval = command_num.ExecuteNonQuery();
             this.gui_parts_table.CurrentRow.DefaultCellStyle.BackColor = Color.Yellow;
@@ -262,6 +366,7 @@ namespace PartType_OEM
                 }
             }
 
+            
         }
 
 

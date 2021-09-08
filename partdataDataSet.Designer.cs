@@ -279,9 +279,9 @@ namespace PartType_OEM {
         [global::System.Xml.Serialization.XmlSchemaProviderAttribute("GetTypedTableSchema")]
         public partial class partsDataTable : global::System.Data.TypedTableBase<partsRow> {
             
-            private global::System.Data.DataColumn columnpartnumber;
+            private global::System.Data.DataColumn columnwptype;
             
-            private global::System.Data.DataColumn columnpartname;
+            private global::System.Data.DataColumn columndescription;
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
@@ -318,17 +318,17 @@ namespace PartType_OEM {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public global::System.Data.DataColumn partnumberColumn {
+            public global::System.Data.DataColumn wptypeColumn {
                 get {
-                    return this.columnpartnumber;
+                    return this.columnwptype;
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public global::System.Data.DataColumn partnameColumn {
+            public global::System.Data.DataColumn descriptionColumn {
                 get {
-                    return this.columnpartname;
+                    return this.columndescription;
                 }
             }
             
@@ -369,11 +369,11 @@ namespace PartType_OEM {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public partsRow AddpartsRow(string partnumber, string partname) {
+            public partsRow AddpartsRow(int wptype, string description) {
                 partsRow rowpartsRow = ((partsRow)(this.NewRow()));
                 object[] columnValuesArray = new object[] {
-                        partnumber,
-                        partname};
+                        wptype,
+                        description};
                 rowpartsRow.ItemArray = columnValuesArray;
                 this.Rows.Add(rowpartsRow);
                 return rowpartsRow;
@@ -396,17 +396,18 @@ namespace PartType_OEM {
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             internal void InitVars() {
-                this.columnpartnumber = base.Columns["partnumber"];
-                this.columnpartname = base.Columns["partname"];
+                this.columnwptype = base.Columns["wptype"];
+                this.columndescription = base.Columns["description"];
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
             private void InitClass() {
-                this.columnpartnumber = new global::System.Data.DataColumn("partnumber", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnpartnumber);
-                this.columnpartname = new global::System.Data.DataColumn("partname", typeof(string), null, global::System.Data.MappingType.Element);
-                base.Columns.Add(this.columnpartname);
+                this.columnwptype = new global::System.Data.DataColumn("wptype", typeof(int), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columnwptype);
+                this.columndescription = new global::System.Data.DataColumn("description", typeof(string), null, global::System.Data.MappingType.Element);
+                base.Columns.Add(this.columndescription);
+                this.columndescription.MaxLength = 65535;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -549,58 +550,58 @@ namespace PartType_OEM {
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public string partnumber {
+            public int wptype {
                 get {
                     try {
-                        return ((string)(this[this.tableparts.partnumberColumn]));
+                        return ((int)(this[this.tableparts.wptypeColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("Der Wert für Spalte partnumber in Tabelle parts ist DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("Der Wert für Spalte wptype in Tabelle parts ist DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tableparts.partnumberColumn] = value;
+                    this[this.tableparts.wptypeColumn] = value;
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public string partname {
+            public string description {
                 get {
                     try {
-                        return ((string)(this[this.tableparts.partnameColumn]));
+                        return ((string)(this[this.tableparts.descriptionColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("Der Wert für Spalte partname in Tabelle parts ist DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("Der Wert für Spalte description in Tabelle parts ist DBNull.", e);
                     }
                 }
                 set {
-                    this[this.tableparts.partnameColumn] = value;
+                    this[this.tableparts.descriptionColumn] = value;
                 }
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public bool IspartnumberNull() {
-                return this.IsNull(this.tableparts.partnumberColumn);
+            public bool IswptypeNull() {
+                return this.IsNull(this.tableparts.wptypeColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public void SetpartnumberNull() {
-                this[this.tableparts.partnumberColumn] = global::System.Convert.DBNull;
+            public void SetwptypeNull() {
+                this[this.tableparts.wptypeColumn] = global::System.Convert.DBNull;
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public bool IspartnameNull() {
-                return this.IsNull(this.tableparts.partnameColumn);
+            public bool IsdescriptionNull() {
+                return this.IsNull(this.tableparts.descriptionColumn);
             }
             
             [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
-            public void SetpartnameNull() {
-                this[this.tableparts.partnameColumn] = global::System.Convert.DBNull;
+            public void SetdescriptionNull() {
+                this[this.tableparts.descriptionColumn] = global::System.Convert.DBNull;
             }
         }
         
@@ -760,6 +761,12 @@ namespace PartType_OEM.partdataDataSetTableAdapters {
         [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "16.0.0.0")]
         private void InitAdapter() {
             this._adapter = new global::MySql.Data.MySqlClient.MySqlDataAdapter();
+            global::System.Data.Common.DataTableMapping tableMapping = new global::System.Data.Common.DataTableMapping();
+            tableMapping.SourceTable = "Table";
+            tableMapping.DataSetTable = "parts";
+            tableMapping.ColumnMappings.Add("wptype", "wptype");
+            tableMapping.ColumnMappings.Add("description", "description");
+            this._adapter.TableMappings.Add(tableMapping);
         }
         
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -775,7 +782,7 @@ namespace PartType_OEM.partdataDataSetTableAdapters {
             this._commandCollection = new global::MySql.Data.MySqlClient.MySqlCommand[1];
             this._commandCollection[0] = new global::MySql.Data.MySqlClient.MySqlCommand();
             this._commandCollection[0].Connection = this.Connection;
-            this._commandCollection[0].CommandText = "SELECT `partnumber`, `partname` FROM `parts`";
+            this._commandCollection[0].CommandText = "SELECT        wptype, description\r\nFROM            parts";
             this._commandCollection[0].CommandType = global::System.Data.CommandType.Text;
         }
         

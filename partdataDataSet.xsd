@@ -9,16 +9,20 @@
         <Tables>
           <TableAdapter BaseClass="System.ComponentModel.Component" DataAccessorModifier="AutoLayout, AnsiClass, Class, Public" DataAccessorName="partsTableAdapter" GeneratorDataComponentClassName="partsTableAdapter" Name="parts" UserDataComponentName="partsTableAdapter">
             <MainSource>
-              <DbSource ConnectionRef="partdataConnectionString (Settings)" DbObjectName="partdata.parts" DbObjectType="Table" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
+              <DbSource ConnectionRef="partdataConnectionString (Settings)" DbObjectName="partdata.parts" DbObjectType="View" FillMethodModifier="Public" FillMethodName="Fill" GenerateMethods="Both" GenerateShortCommands="false" GeneratorGetMethodName="GetData" GeneratorSourceName="Fill" GetMethodModifier="Public" GetMethodName="GetData" QueryType="Rowset" ScalarCallRetval="System.Object, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" UseOptimisticConcurrency="true" UserGetMethodName="GetData" UserSourceName="Fill">
                 <SelectCommand>
                   <DbCommand CommandType="Text" ModifiedByUser="false">
-                    <CommandText>SELECT `partnumber`, `partname` FROM `parts`</CommandText>
+                    <CommandText>SELECT        wptype, description
+FROM            parts</CommandText>
                     <Parameters />
                   </DbCommand>
                 </SelectCommand>
               </DbSource>
             </MainSource>
-            <Mappings />
+            <Mappings>
+              <Mapping SourceColumn="wptype" DataSetColumn="wptype" />
+              <Mapping SourceColumn="description" DataSetColumn="description" />
+            </Mappings>
             <Sources />
           </TableAdapter>
         </Tables>
@@ -29,11 +33,17 @@
   <xs:element name="partdataDataSet" msdata:IsDataSet="true" msdata:UseCurrentLocale="true" msprop:EnableTableAdapterManager="True" msprop:Generator_DataSetName="partdataDataSet" msprop:Generator_UserDSName="partdataDataSet">
     <xs:complexType>
       <xs:choice minOccurs="0" maxOccurs="unbounded">
-        <xs:element name="parts" msprop:Generator_TableClassName="partsDataTable" msprop:Generator_TableVarName="tableparts" msprop:Generator_TablePropName="parts" msprop:Generator_RowDeletingName="partsRowDeleting" msprop:Generator_RowChangingName="partsRowChanging" msprop:Generator_RowEvHandlerName="partsRowChangeEventHandler" msprop:Generator_RowDeletedName="partsRowDeleted" msprop:Generator_UserTableName="parts" msprop:Generator_RowChangedName="partsRowChanged" msprop:Generator_RowEvArgName="partsRowChangeEvent" msprop:Generator_RowClassName="partsRow">
+        <xs:element name="parts" msprop:Generator_TableClassName="partsDataTable" msprop:Generator_TableVarName="tableparts" msprop:Generator_RowChangedName="partsRowChanged" msprop:Generator_TablePropName="parts" msprop:Generator_RowDeletingName="partsRowDeleting" msprop:Generator_RowChangingName="partsRowChanging" msprop:Generator_RowEvHandlerName="partsRowChangeEventHandler" msprop:Generator_RowDeletedName="partsRowDeleted" msprop:Generator_RowClassName="partsRow" msprop:Generator_UserTableName="parts" msprop:Generator_RowEvArgName="partsRowChangeEvent">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="partnumber" msprop:Generator_ColumnVarNameInTable="columnpartnumber" msprop:Generator_ColumnPropNameInRow="partnumber" msprop:Generator_ColumnPropNameInTable="partnumberColumn" msprop:Generator_UserColumnName="partnumber" type="xs:string" minOccurs="0" />
-              <xs:element name="partname" msprop:Generator_ColumnVarNameInTable="columnpartname" msprop:Generator_ColumnPropNameInRow="partname" msprop:Generator_ColumnPropNameInTable="partnameColumn" msprop:Generator_UserColumnName="partname" type="xs:string" minOccurs="0" />
+              <xs:element name="wptype" msprop:Generator_ColumnVarNameInTable="columnwptype" msprop:Generator_ColumnPropNameInRow="wptype" msprop:Generator_ColumnPropNameInTable="wptypeColumn" msprop:Generator_UserColumnName="wptype" type="xs:int" minOccurs="0" />
+              <xs:element name="description" msprop:Generator_ColumnVarNameInTable="columndescription" msprop:Generator_ColumnPropNameInRow="description" msprop:Generator_ColumnPropNameInTable="descriptionColumn" msprop:Generator_UserColumnName="description" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:maxLength value="65535" />
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
             </xs:sequence>
           </xs:complexType>
         </xs:element>
