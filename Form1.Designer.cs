@@ -68,6 +68,7 @@ namespace PartType_OEM
             // 
             // PT_select
             // 
+            this.PT_select.Enabled = false;
             this.PT_select.Location = new System.Drawing.Point(503, 415);
             this.PT_select.Name = "PT_select";
             this.PT_select.Size = new System.Drawing.Size(134, 23);

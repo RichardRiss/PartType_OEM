@@ -132,6 +132,18 @@ namespace PartType_OEM
                 {
                     connected = false;
                 }
+
+                //Read SK Enable From PLC
+                //DB1510.DBX58.0
+                int area = (int)S7Area.DB;
+                int len = (int)S7WordLength.Bit;
+                byte[] buffer = new byte[1];
+                byte cmp = 1;
+                client.ReadArea(area, 1510, 404, 1, len, buffer);
+                bool bit = cmp.Equals(buffer[0]);
+
+                PT_select.Invoke(new Action(() => PT_select.Enabled = bit));
+                     
             }
             else 
             {
@@ -349,6 +361,15 @@ namespace PartType_OEM
                 bool success = new bool();
                 write_struct(client, wptype,typeclass,description, ref success);
             }
+
+
+            //Set Type Selected
+            //DB1510.DBX52.4
+            int area = (int)S7Area.DB;
+            int len = (int)S7WordLength.Bit;
+            byte[] buffer = new byte[1];
+            buffer[0] = 1;
+            client.WriteArea(area, 1510, 420, 1, len, buffer);
 
 
             var query_num = $"UPDATE workpieces SET activated = 1 WHERE wptype = {selected_num};";
